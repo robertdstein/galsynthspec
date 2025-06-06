@@ -31,7 +31,7 @@ def generate_sed_plot(
     rest_frame_wavelengths = res.rest_frame_wavelengths
     predicted_photometry = res.predicted_photometry
 
-    df = res.sample_sed_from_posterior(n_sample=1000)
+    df = res.sample_sed_from_posterior(n_sample=100)  # FIXME
 
     plt.figure()
     ax = plt.subplot(111)

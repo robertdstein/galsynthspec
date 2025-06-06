@@ -1,12 +1,15 @@
 import pandas as pd
 from prospect.sources.constants import ckms, cosmo, jansky_cgs, lightspeed
 from scipy import stats
-from sedpy.observate import getSED, list_available_filters, load_filters
+from sedpy.observate import getSED, load_filters
 
 from galsynthspec.datamodels.galaxy import Galaxy
 from galsynthspec.datamodels.result import Result
+from galsynthspec.utils.extinction import get_extinction_for_filter
 
 DEFAULT_FILTER_LIST = [
+    "galex_FUV",
+    "galex_NUV",
     "uvot_w2",
     "uvot_m2",
     "uvot_w1",
@@ -115,6 +118,8 @@ def get_predicted_photometry(
         for x in filter_list
     ]
 
+    extinction = [get_extinction_for_filter(galaxy.sky_coord, x) for x in filter_list]
+
     phot_df = pd.DataFrame(
         {
             "band": filter_list,
@@ -123,9 +128,15 @@ def get_predicted_photometry(
             "sigma-": lower_pred - med,
             "measured_mag": true,
             "measured_err": ul,
-            "unextincted_mag": unextincted,
+            "extinction": extinction,
+            "measured_mag_deextincted": unextincted,
         }
     )
+    phot_df["predicted_mag_extincted"] = (
+        phot_df["predicted_mag"] + phot_df["extinction"]
+    )
+
+    print(phot_df)
 
     phot_df.to_json(galaxy.synthetic_photometry_file)
     return phot_df

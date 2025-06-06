@@ -20,7 +20,7 @@ m = sfdmap.SFDMap(sfd_path.as_posix())
 
 def get_extinction_correction(
     ra_deg: float, dec_deg: float, wavelengths_angstroms: list[float]
-) -> float:
+) -> list[float]:
     """
     Apply extinction correction
 
@@ -52,5 +52,5 @@ def get_extinction_for_filter(
         ra_deg=src_position.ra.deg,
         dec_deg=src_position.dec.deg,
         wavelengths_angstroms=[mean],
-    )
+    )[0]
     return extinction_value
