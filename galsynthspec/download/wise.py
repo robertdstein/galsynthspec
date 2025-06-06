@@ -70,8 +70,12 @@ def download_wise_data(
         # if np.ma.is_masked(mag_err):
         #     mag_err = 0.0
 
-        entry = Photometry(
-            filter_name=f"wise_{band}", mag=mag, mag_err=mag_err, vega_mag=mag_raw
+        entry = Photometry.from_position(
+            src_position=src_position,
+            filter_name=f"wise_{band}",
+            observed_mag=mag,
+            mag_err=mag_err,
+            vega_mag=mag_raw,
         )
         all_filters.append(entry)
 

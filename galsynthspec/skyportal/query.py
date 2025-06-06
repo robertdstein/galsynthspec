@@ -5,11 +5,7 @@ Module for querying the SkyPortal API for source information.
 import logging
 
 import pandas as pd
-from astropy import units as u
-from astropy.coordinates import SkyCoord
-from astroquery.mast import Catalogs
 
-from galsynthspec.datamodels import Galaxy
 from galsynthspec.skyportal.base_client import client
 
 logger = logging.getLogger(__name__)

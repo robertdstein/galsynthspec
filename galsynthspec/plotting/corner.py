@@ -9,7 +9,7 @@ import matplotlib.pyplot as pl
 import matplotlib.pyplot as plt
 from prospect.plotting import corner
 
-from galsynthspec.datamodels import Result
+from galsynthspec.datamodels.result import Result
 
 logger = logging.getLogger(__name__)
 

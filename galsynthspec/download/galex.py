@@ -54,7 +54,12 @@ def download_galex_data(
 
         if not np.ma.is_masked(mag):
 
-            entry = Photometry(filter_name=f"galex_{b}", mag=mag, mag_err=magerr)
+            entry = Photometry.from_position(
+                src_position=src_position,
+                filter_name=f"galex_{b}",
+                observed_mag=mag,
+                mag_err=magerr,
+            )
             all_filters.append(entry)
 
     logger.info(f"GALEX data found with {len(all_filters)} filters")

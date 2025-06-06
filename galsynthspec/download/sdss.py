@@ -54,7 +54,12 @@ def download_sdss_data(
         # magerr = np.array([cat[0][magerr_col]])
         # magerr = np.hypot(magerr, 0.05)
 
-        entry = Photometry(filter_name=f"sdss_{b}0", mag=mag, mag_err=magerr[0])
+        entry = Photometry.from_position(
+            src_position=src_position,
+            filter_name=f"sdss_{b}0",
+            observed_mag=mag,
+            mag_err=magerr[0],
+        )
         all_filters.append(entry)
 
     logger.info(f"SDSS data found with {len(all_filters)} filters")

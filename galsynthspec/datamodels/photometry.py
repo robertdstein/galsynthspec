@@ -6,6 +6,8 @@ import numpy as np
 from pydantic import BaseModel, Field, model_validator
 from sedpy.observate import Filter, list_available_filters
 
+from galsynthspec.utils.extinction import get_extinction_for_filter
+
 
 class Photometry(BaseModel):
     """
@@ -13,7 +15,8 @@ class Photometry(BaseModel):
     """
 
     filter_name: str = Field(description="Name of the filter")
-    mag: float = Field(description="AB Magnitude for the photometry")
+    observed_mag: float = Field(description="AB Magnitude for the photometry")
+    extinction: float = Field(description="Extinction factor for the photometry")
     vega_mag: float | None = Field(
         description="Vega Magnitude for the photometry", default=None
     )
@@ -21,6 +24,13 @@ class Photometry(BaseModel):
     systematic_error: float = Field(
         description="Systematic error in the photometry", default=0.05
     )
+
+    @property
+    def mag(self) -> float:
+        """
+        Get the magnitude in AB system
+        """
+        return self.observed_mag - self.extinction
 
     @model_validator(mode="after")
     def validate_filter(self):
@@ -46,7 +56,7 @@ class Photometry(BaseModel):
         """
         Convert the magnitude to maggies
         """
-        return 10.0 ** (-0.4 * self.mag) if not np.isnan(self.mag) else 0.0
+        return 10.0 ** (-0.4 * self.mag) if not np.isnan(self.observed_mag) else 0.0
 
     @property
     def mag_err_combined(self) -> float:
@@ -54,3 +64,13 @@ class Photometry(BaseModel):
         Get the systematic error in the magnitude
         """
         return np.hypot(self.mag_err, self.systematic_error)
+
+    @classmethod
+    def from_position(cls, src_position, filter_name: str, **kwargs) -> "Photometry":
+        """
+        Create a Photometry instance from source position and filter data
+        """
+        extinction = get_extinction_for_filter(
+            src_position=src_position, filter_name=filter_name
+        )
+        return cls(filter_name=filter_name, extinction=extinction, **kwargs)

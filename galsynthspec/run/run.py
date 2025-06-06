@@ -1,6 +1,6 @@
 import logging
 
-from galsynthspec.datamodels import Galaxy
+from galsynthspec.datamodels.galaxy import Galaxy
 from galsynthspec.run.analyse import analyse_results
 from galsynthspec.run.fit import get_galaxy_results
 

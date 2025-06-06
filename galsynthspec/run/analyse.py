@@ -1,4 +1,5 @@
-from galsynthspec.datamodels import Galaxy, Result
+from galsynthspec.datamodels.galaxy import Galaxy
+from galsynthspec.datamodels.result import Result
 from galsynthspec.plotting.corner import plot_corner
 from galsynthspec.plotting.sed import generate_sed_plot
 from galsynthspec.utils.predict import get_predicted_photometry

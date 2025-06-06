@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 
-from galsynthspec.datamodels import Result
+from galsynthspec.datamodels.result import Result
 
 logger = logging.getLogger(__name__)
 

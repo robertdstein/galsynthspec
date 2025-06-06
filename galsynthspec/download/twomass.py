@@ -66,8 +66,12 @@ def download_twomass_extended(
         #     magerr = np.array([match[f"{band.lower()[0]}_msig_k20fe"]])
         #     magerr = np.hypot(magerr, 0.4)[0]
 
-        entry = Photometry(
-            filter_name=f"twomass_{band}", mag=mag, mag_err=magerr, vega_mag=mag_raw
+        entry = Photometry.from_position(
+            src_position=src_position,
+            filter_name=f"twomass_{band}",
+            observed_mag=mag,
+            mag_err=magerr,
+            vega_mag=mag_raw,
         )
         all_filters.append(entry)
 
@@ -135,7 +139,7 @@ def download_twomass_ps(
 
         entry = Photometry(
             filter_name=f"twomass_{band}",
-            mag=mag,
+            observed_mag=mag,
             mag_err=mag_err,
             vega_mag=mag_raw,
             systematic_error=0.2,

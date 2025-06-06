@@ -9,27 +9,29 @@ from prospect.fitting import fit_model, lnprobfn
 from prospect.io import write_results as writer
 from prospect.utils.obsutils import fix_obs
 
-from galsynthspec.datamodels import Galaxy, Result
+from galsynthspec.datamodels.galaxy import Galaxy
+from galsynthspec.datamodels.result import Result
 from galsynthspec.download import download_all_data
 from galsynthspec.model import get_model, get_sps
 
 logger = logging.getLogger(__name__)
 
 
-def fit_galaxy(galaxy: Galaxy, use_cache: bool = True) -> Result:
+def fit_galaxy(galaxy: Galaxy, use_cache: bool = True):
     """
     Fit a galaxy model to the photometry data of a given galaxy.
 
     :param galaxy: Galaxy The galaxy object containing the photometry data.
     :param use_cache: Bool If True, use cached results if available.
-    :return:
+    :return: None
     """
 
     photometry_list = galaxy.get_photometry(use_cache=use_cache)
 
     filters = [p.filter for p in photometry_list]
     maggies = np.array([p.maggies for p in photometry_list])
-    magerr = np.array([p.mag_err for p in photometry_list])
+
+    magerr = np.array([p.mag_err_combined for p in photometry_list])
 
     obs = {
         "wavelength": None,
@@ -49,18 +51,18 @@ def fit_galaxy(galaxy: Galaxy, use_cache: bool = True) -> Result:
 
     sps = get_sps()
 
-    fitting_kwargs = {
-        "nlive_init": 400,
-        "nested_method": "rwalk",
-        "nested_dlogz_init": 0.05,
-        "nested_target_n_effective": 1000,
-    }
+    fitting_kwargs = dict(
+        nlive_init=400,
+        nested_method="rwalk",
+        nested_target_n_effective=1000,
+        nested_dlogz_init=0.05,
+    )
 
     output = fit_model(
         obs,
         model,
         sps,
-        optimize=False,
+        optimize=True,
         dynesty=True,
         lnprobfn=lnprobfn,
         noise=noise_model,
@@ -85,8 +87,6 @@ def fit_galaxy(galaxy: Galaxy, use_cache: bool = True) -> Result:
         f"Prospector run complete for {galaxy.source_name} in {duration:.1f} seconds"
     )
 
-    return galaxy.load_results()
-
 
 def get_galaxy_results(galaxy: Galaxy, use_cache: bool = True) -> Result:
     """
@@ -99,8 +99,9 @@ def get_galaxy_results(galaxy: Galaxy, use_cache: bool = True) -> Result:
     """
     hfile = galaxy.mcmc_cache_file
 
-    if hfile.exists() and use_cache:
+    if hfile.exists() & use_cache:
         logger.info(f"Cache file {hfile} already exists, skipping fitting.")
-        return galaxy.load_results()
+    else:
+        fit_galaxy(galaxy, use_cache=use_cache)
 
-    fit_galaxy(galaxy, use_cache=use_cache)
+    return galaxy.load_results()

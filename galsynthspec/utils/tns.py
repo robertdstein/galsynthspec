@@ -11,6 +11,7 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 
 from galsynthspec.paths import get_output_dir
+from galsynthspec.skyportal.query import strip_tns_name
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +38,7 @@ def query_tns_by_name(
 
     query_arg = "internal_name=" if internal_name_bool else "name="
 
-    search_url = (
-        f"{BASE_TNS_URL}{query_arg}{source_name}&include_frb=0&format=csv&page=0"
-    )
+    search_url = f"{BASE_TNS_URL}{query_arg}{strip_tns_name(source_name)}&include_frb=0&format=csv&page=0"
     response = requests.get(search_url, headers=TNS_HEADERS)
     csv_data = StringIO(response.text)
     return pd.read_csv(csv_data)
@@ -69,6 +68,7 @@ def download_tns(source_name: str) -> pd.Series:
     # Add coordinates in degrees
     c = SkyCoord(res["RA"], res["DEC"], unit=(u.hourangle, u.deg))
     res["ra"], res["dec"] = c.ra.deg, c.dec.deg
+    res["redshift"] = res["Redshift"] if "Redshift" in res else None
 
     return res
 

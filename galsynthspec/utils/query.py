@@ -10,7 +10,7 @@ from astropy.coordinates import SkyCoord
 from astroquery.mast import Catalogs
 from requests.exceptions import HTTPError
 
-from galsynthspec.datamodels import Galaxy
+from galsynthspec.datamodels.galaxy import Galaxy
 from galsynthspec.skyportal import client, query_skyportal_by_name
 from galsynthspec.utils.tns import get_tns_by_name
 

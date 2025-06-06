@@ -184,7 +184,7 @@ class Result(BaseModel):
         """
         redshift = self.redshift
         if redshift is None:
-            idx = self.fit_parameters.index("redshift")
+            idx = self.fit_parameters.index("zred")
             redshift = weighted_quantiles(
                 self.chain[:, idx],
                 self.weights,

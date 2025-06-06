@@ -3,7 +3,8 @@ from prospect.sources.constants import ckms, cosmo, jansky_cgs, lightspeed
 from scipy import stats
 from sedpy.observate import getSED, list_available_filters, load_filters
 
-from galsynthspec.datamodels import Galaxy, Result
+from galsynthspec.datamodels.galaxy import Galaxy
+from galsynthspec.datamodels.result import Result
 
 DEFAULT_FILTER_LIST = [
     "uvot_w2",
@@ -103,6 +104,10 @@ def get_predicted_photometry(
     )
 
     true = [
+        photometry_dict[x].observed_mag if x in photometry_dict else None
+        for x in filter_list
+    ]
+    unextincted = [
         photometry_dict[x].mag if x in photometry_dict else None for x in filter_list
     ]
     ul = [
@@ -118,6 +123,7 @@ def get_predicted_photometry(
             "sigma-": lower_pred - med,
             "measured_mag": true,
             "measured_err": ul,
+            "unextincted_mag": unextincted,
         }
     )
 

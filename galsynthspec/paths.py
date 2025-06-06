@@ -28,6 +28,8 @@ else:
         f"Using data directory {data_dir} set by environment variable GALSPECSYNTH_DATA_DIR."
     )
 
+sfd_path = data_dir.joinpath("sfdmap/sfddata-master")
+
 
 def get_output_dir(source_name: str) -> Path:
     """

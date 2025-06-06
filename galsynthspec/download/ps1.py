@@ -60,7 +60,12 @@ def download_ps1_data(
 
         filter_name = f"ps1::{b}" if b in ["y"] else f"sdss_{b}0"
 
-        entry = Photometry(filter_name=filter_name, mag=mag, mag_err=mag_err)
+        entry = Photometry.from_position(
+            src_position=src_position,
+            filter_name=filter_name,
+            observed_mag=mag,
+            mag_err=mag_err,
+        )
         all_filters.append(entry)
 
     logger.info(f"PS1 data found with {len(all_filters)} filters")
