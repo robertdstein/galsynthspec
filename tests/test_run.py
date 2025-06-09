@@ -40,6 +40,7 @@ class TestGalsynthspec(unittest.TestCase):
             cli,
             ["by-name", test_name],
         )
+        print(result.output)
         assert result.exit_code == 0
 
         # Check results
