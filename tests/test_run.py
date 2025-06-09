@@ -39,7 +39,8 @@ class TestGalsynthspec(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(
             cli,
-            ["by-ra-dec", test_ra, test_dec, "-z", str(redshift)],
+            ["by-ra-dec", str(test_ra), str(test_dec), "-z", str(redshift)],
+            catch_exceptions=False,
         )
         if not result.exit_code == 0:
             logger.error("Command failed")

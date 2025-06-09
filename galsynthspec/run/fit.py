@@ -53,7 +53,7 @@ def fit_galaxy(galaxy: Galaxy, use_cache: bool = True):
     fitting_kwargs = {
         "nlive_init": 1000,
         "nested_method": "rwalk",
-        "nested_target_n_effective": 10000,
+        "nested_target_n_effective": 1000,
         "nested_dlogz_init": 0.05,
     }
 
