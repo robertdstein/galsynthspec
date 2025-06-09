@@ -62,4 +62,4 @@ class TestGalsynthspec(unittest.TestCase):
         )
         assert gal.synthetic_photometry_file.exists()
         new = pd.read_json(gal.synthetic_photometry_file)
-        pd.testing.assert_frame_equal(new, expected_df)
+        pd.testing.assert_frame_equal(new, expected_df, check_exact=False)

@@ -40,6 +40,21 @@ jobs:
         run: |
           pip install --editable ".[dev]"
 
+      - name: SFDMAP
+        env:
+          SFDMAP_DATA_DIR: /sfdmap
+        run: |
+          mkdir -p $SFDMAP_DATA_DIR
+          wget https://github.com/kbarbary/sfddata/archive/master.tar.gz
+          tar -xzf master.tar.gz -C $SFDMAP_DATA_DIR --strip-components=1 && rm master.tar.gz
+
+      - name: FSPS
+        env:
+          SPS_HOME: /fsps
+        run: |
+          git clone --depth=1 https://github.com/cconroy20/fsps $SPS_HOME
+          make --directory=$SPS_HOME/src
+
       - name: Run tests
         run: coverage run -m unittest discover tests
 
