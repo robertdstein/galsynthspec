@@ -39,8 +39,8 @@ def run_by_name(name, use_cache):
 @cli.command("by-ra-dec")
 @click.argument("ra_deg", type=float)
 @click.argument("dec_deg", type=float)
-@click.argument("name", type=str, default=None)
-@click.argument("redshift", type=float, default=None)
+@click.option("-n", "--name", type=str, default=None)
+@click.option("-z", "--redshift", type=float, default=None)
 def run_by_ra_dec(ra_deg: float, dec_deg: float, name=None, redshift=None):
     """
     Run the galaxy synthetic spectra pipeline for a given galaxy name.

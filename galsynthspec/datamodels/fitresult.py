@@ -120,8 +120,8 @@ class FitResult(BaseModel):
         return cls(
             input_path=file_path,
             fit_parameters=out["theta_labels"],
-            chain=out["chain"],
-            weights=out["weights"],
+            chain=out["chain"][500:],
+            weights=out["weights"][500:],
             redshift=out["obs"]["redshift"],
             obs=out["obs"],
             model=model,
