@@ -32,14 +32,17 @@ def query_tns_by_name(
     Query the Transient Name Server (TNS) by name.
 
     :param source_name: Name of the transient to search for.
-    :param internal_name_bool: Boolean to indicate if the name is an internal survey name.
+    :param internal_name_bool: Boolean whether the name is an internal survey name.
     :return: A pandas DataFrame containing the search results.
     """
 
     query_arg = "internal_name=" if internal_name_bool else "name="
 
-    search_url = f"{BASE_TNS_URL}{query_arg}{strip_tns_name(source_name)}&include_frb=0&format=csv&page=0"
-    response = requests.get(search_url, headers=TNS_HEADERS)
+    search_url = (
+        f"{BASE_TNS_URL}{query_arg}{strip_tns_name(source_name)}"
+        f"&include_frb=0&format=csv&page=0"
+    )
+    response = requests.get(search_url, headers=TNS_HEADERS, timeout=10)
     csv_data = StringIO(response.text)
     return pd.read_csv(csv_data)
 
@@ -66,7 +69,9 @@ def download_tns(source_name: str) -> pd.Series:
     res = df.iloc[0].copy()
 
     # Add coordinates in degrees
-    c = SkyCoord(res["RA"], res["DEC"], unit=(u.hourangle, u.deg))
+    c = SkyCoord(
+        res["RA"], res["DEC"], unit=(u.hourangle, u.deg)  # pylint: disable=no-member
+    )
     res["ra"], res["dec"] = c.ra.deg, c.dec.deg
     res["redshift"] = res["Redshift"] if "Redshift" in res else None
 

@@ -1,4 +1,6 @@
-import logging
+"""
+Module for running the galaxy synthetic spectra pipeline.
+"""
 
 from galsynthspec.datamodels.galaxy import Galaxy
 from galsynthspec.run.analyse import analyse_results

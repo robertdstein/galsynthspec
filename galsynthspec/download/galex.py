@@ -35,8 +35,10 @@ def download_galex_data(
 
     all_filters = []
 
-    catalog_data = Catalogs.query_region(
-        src_position, radius=radius_arcsec * u.arcsec, catalog="Galex"
+    catalog_data = Catalogs.query_region(  # pylint: disable=no-member
+        src_position,
+        radius=radius_arcsec * u.arcsec,  # pylint: disable=no-member
+        catalog="Galex",
     )
 
     if len(catalog_data) == 0:

@@ -30,7 +30,7 @@ def get_extinction_correction(
     ebv = m.ebv(coordinates)
     wave = np.array(wavelengths_angstroms)
 
-    return extinction.fitzpatrick99(wave, 3.1 * ebv)
+    return extinction.fitzpatrick99(wave, 3.1 * ebv)  # pylint: disable=no-member
 
 
 def get_extinction_for_filter(

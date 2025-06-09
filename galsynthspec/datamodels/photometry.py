@@ -39,7 +39,8 @@ class Photometry(BaseModel):
         """
         if self.filter_name not in list_available_filters():
             raise ValueError(
-                f"Filter {self.filter_name} not found. Available filters are {list_available_filters()}"
+                f"Filter {self.filter_name} not found. "
+                f"Available filters are {list_available_filters()}"
             )
 
         return self

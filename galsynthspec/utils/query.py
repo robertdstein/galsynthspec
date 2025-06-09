@@ -54,8 +54,10 @@ def query_by_name(name: str, use_cache: bool = True) -> Galaxy:
 
     src_position = SkyCoord(src_ra, src_dec, unit="deg")
 
-    catalog_data = Catalogs.query_region(
-        src_position, radius=10.0 * u.arcsec, catalog="Panstarrs"
+    catalog_data = Catalogs.query_region(  # pylint: disable=no-member
+        src_position,
+        radius=10.0 * u.arcsec,  # pylint: disable=no-member
+        catalog="Panstarrs",
     )
 
     if len(catalog_data) > 1:
