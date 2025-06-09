@@ -13,12 +13,13 @@ from galsynthspec.datamodels.photometry import Photometry
 
 logger = logging.getLogger(__name__)
 
-# WISE values from https://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec4_4h.html
+# WISE values from
+# https://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec4_4h.html
 zeromag_wise = {
-    "w1": 309.5 * u.Jansky,
-    "w2": 171.8 * u.Jansky,
-    "w3": 31.7 * u.Jansky,
-    "w4": 8.4 * u.Jansky,
+    "w1": 309.5 * u.Jansky,  # pylint: disable=no-member
+    "w2": 171.8 * u.Jansky,  # pylint: disable=no-member
+    "w3": 31.7 * u.Jansky,  # pylint: disable=no-member
+    "w4": 8.4 * u.Jansky,  # pylint: disable=no-member
 }
 offsets_wise = {key: zm.to("mag(AB)").value for key, zm in zeromag_wise.items()}
 
@@ -52,7 +53,7 @@ def download_wise_data(
 
     match = allwise[0]
 
-    for band in zeromag_wise.keys():
+    for band in zeromag_wise:
         mag_raw = match[f"{band}mpro"]
         offset = offsets_wise[band]
         mag = mag_raw + offset
@@ -61,14 +62,6 @@ def download_wise_data(
         if np.ma.is_masked(match[f"{band}sigmpro"]):
             mag_err = mag
             mag = np.nan
-
-        # else:
-        #     flux = 10. ** (-0.4 * mag)
-        #     magerr = np.array([match[f"{band}sigmpro"]])
-        #     magerr = np.hypot(magerr, 0.05)[0]
-
-        # if np.ma.is_masked(mag_err):
-        #     mag_err = 0.0
 
         entry = Photometry.from_position(
             src_position=src_position,

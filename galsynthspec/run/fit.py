@@ -11,7 +11,6 @@ from prospect.utils.obsutils import fix_obs
 
 from galsynthspec.datamodels.galaxy import Galaxy
 from galsynthspec.datamodels.result import Result
-from galsynthspec.download import download_all_data
 from galsynthspec.model import get_model, get_sps
 
 logger = logging.getLogger(__name__)
@@ -51,24 +50,24 @@ def fit_galaxy(galaxy: Galaxy, use_cache: bool = True):
 
     sps = get_sps()
 
-    fitting_kwargs = dict(
-        nlive_init=400,
-        nested_method="rwalk",
-        nested_target_n_effective=1000,
-        nested_dlogz_init=0.05,
-    )
+    fitting_kwargs = {
+        "nlive_init": 1000,
+        "nested_method": "rwalk",
+        "nested_target_n_effective": 10000,
+        "nested_dlogz_init": 0.05,
+    }
 
     output = fit_model(
         obs,
         model,
         sps,
-        optimize=True,
+        optimize=False,
         dynesty=True,
         lnprobfn=lnprobfn,
         noise=noise_model,
         **fitting_kwargs,
     )
-    result, duration = output["sampling"]
+    _, duration = output["sampling"]
 
     galaxy.mcmc_cache_file.unlink(missing_ok=True)
     writer.write_hdf5(
@@ -95,7 +94,8 @@ def get_galaxy_results(galaxy: Galaxy, use_cache: bool = True) -> Result:
     :param galaxy: Galaxy The galaxy object to generate spectra for.
     :param use_cache: bool Whether to refit the model even if a cache file exists.
                         Defaults to False.
-    :return: Result The result of the fitting process, including the model and observations.
+    :return: Result The result of the fitting process,
+                including the model and observations.
     """
     hfile = galaxy.mcmc_cache_file
 

@@ -17,7 +17,11 @@ logging.getLogger("astroquery").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 # 2MASS values from https://iopscience.iop.org/article/10.1086/376474
-zeromag_2mass = {"J": 1594.0 * u.Jansky, "H": 1024.0 * u.Jansky, "Ks": 666.8 * u.Jansky}
+zeromag_2mass = {
+    "J": 1594.0 * u.Jansky,  # pylint: disable=no-member
+    "H": 1024.0 * u.Jansky,  # pylint: disable=no-member
+    "Ks": 666.8 * u.Jansky,  # pylint: disable=no-member
+}
 offsets_2mass = {key: zm.to("mag(AB)").value for key, zm in zeromag_2mass.items()}
 
 
@@ -50,21 +54,12 @@ def download_twomass_extended(
 
     match = extended_matches[0]
 
-    for band in zeromag_2mass.keys():
+    for band in zeromag_2mass:
         mag_raw = match[f"{band.lower()[0]}_m_k20fe"]
         offset = offsets_2mass[band]
         # Convert from Vega to AB mag
         mag = mag_raw + offset
         magerr = match[f"{band.lower()[0]}_msig_k20fe"]
-
-        # if np.ma.is_masked(mag_raw):
-        #     flux = 0.0
-        #     magerr = mag[0]
-        #
-        # else:
-        #     flux = 10. ** (-0.4 * mag)
-        #     magerr = np.array([match[f"{band.lower()[0]}_msig_k20fe"]])
-        #     magerr = np.hypot(magerr, 0.4)[0]
 
         entry = Photometry.from_position(
             src_position=src_position,
@@ -120,7 +115,7 @@ def download_twomass_ps(
         logger.info("No 2MASS data found")
         return all_filters
 
-    for band in zeromag_2mass.keys():
+    for band in zeromag_2mass:
         mag_raw = src_list[f"{band.lower()}_m"][0]
         offset = offsets_2mass[band]
         # Convert from Vega to AB mag
@@ -128,21 +123,12 @@ def download_twomass_ps(
 
         mag_err = src_list[f"{band.lower()}_msigcom"][0]
 
-        # if np.ma.is_masked(mag_raw):
-        #     flux = 0.0
-        #     magerr = mag
-        #
-        # else:
-        #     flux = 10.**(-0.4 * mag)
-        #     magerr = np.array([src_list[f"{band.lower()}_msigcom"][0]])
-        #     magerr = np.hypot(magerr, 0.05)
-
-        entry = Photometry(
+        entry = Photometry.from_position(
+            src_position=src_position,
             filter_name=f"twomass_{band}",
             observed_mag=mag,
             mag_err=mag_err,
             vega_mag=mag_raw,
-            systematic_error=0.2,
         )
         all_filters.append(entry)
 

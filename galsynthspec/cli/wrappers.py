@@ -20,7 +20,6 @@ def cli():
     """
     CLI for galaxy synthetic spectra.
     """
-    pass
 
 
 @cli.command("by-name")

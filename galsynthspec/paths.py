@@ -25,10 +25,17 @@ if _data_dir is None:
 else:
     data_dir = Path(_data_dir)
     logger.info(
-        f"Using data directory {data_dir} set by environment variable GALSPECSYNTH_DATA_DIR."
+        f"Using data directory {data_dir} set by "
+        f"environment variable GALSPECSYNTH_DATA_DIR."
     )
 
-sfd_path = data_dir.joinpath("sfdmap/sfddata-master")
+
+sfd_path = Path(
+    os.getenv(
+        "SFDMAP_DATA_DIR",
+        data_dir.joinpath("sfdmap/sfddata-master"),  # Default path for SFD map data
+    )
+)
 
 
 def get_output_dir(source_name: str) -> Path:

@@ -8,7 +8,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import scipy.stats as stats
+from scipy import stats
 
 from galsynthspec.datamodels.result import Result
 
@@ -27,17 +27,15 @@ def generate_sed_plot(
     :return: SED DataFrame with the predicted SEDs
     """
 
-    redshift = res.get_redshift()
-    rest_frame_wavelengths = res.rest_frame_wavelengths
-    predicted_photometry = res.predicted_photometry
+    obs_wavelengths = res.rest_frame_wavelengths * (1 + res.get_redshift())
 
-    df = res.sample_sed_from_posterior(n_sample=100)  # FIXME
+    df = res.sample_sed_from_posterior(n_sample=100)
 
     plt.figure()
     ax = plt.subplot(111)
 
     # Plot Median
-    plt.plot(rest_frame_wavelengths * (1 + redshift), df.quantile(0.5), linestyle="-")
+    plt.plot(obs_wavelengths, df.quantile(0.5), linestyle="-")
 
     sigmas = np.linspace(0.0, 3.0, 50)
 
@@ -46,24 +44,24 @@ def generate_sed_plot(
         lower_percentile = 1.0 - upper_percentile
 
         plt.fill_between(
-            rest_frame_wavelengths * (1 + redshift),
+            obs_wavelengths,
             df.quantile(upper_percentile),
             df.quantile(lower_percentile),
             alpha=1.0 / len(sigmas),
             color="C1",
         )
 
-    pwave = np.array([f.wave_effective for f in predicted_photometry.filters])
+    pwave = np.array([f.wave_effective for f in res.predicted_photometry.filters])
     # plot the data
 
-    maggies = predicted_photometry.maggies
+    maggies = res.predicted_photometry.maggies
     mask = maggies > 0.0
 
     ax.plot(pwave, maggies, linestyle="", marker="o", color="k")
     ax.errorbar(
         pwave,
         maggies,
-        yerr=predicted_photometry.maggies_unc,
+        yerr=res.predicted_photometry.maggies_unc,
         linestyle="",
         color="k",
         zorder=10,
@@ -79,5 +77,13 @@ def generate_sed_plot(
     logger.info(f"Saving SED plot to {out_path}")
     plt.savefig(out_path, bbox_inches="tight", dpi=300.0)
     plt.close()
+
+    new = pd.DataFrame()
+    new["wavelength"] = obs_wavelengths
+    new["flux"] = df.quantile(0.5)
+    new["sigma"] = 0.5 * (df.quantile(0.84) - df.quantile(0.16))
+    sed_path = out_dir / "synthetic_sed.json"
+    logger.info(f"Saving synthetic SED to {sed_path}")
+    new.to_json(sed_path)
 
     return df

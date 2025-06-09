@@ -34,7 +34,7 @@ def download_sdss_data(
 
     all_filters = []
 
-    cat = SDSS.query_crossid(
+    cat = SDSS.query_crossid(  # pylint: disable=no-member
         src_position,
         radius=radius_arcsec * u.arcsec,  # pylint: disable=no-member
         photoobj_fields=["ra", "dec"] + SDSS_MAG_COLS + SDSS_MAGERR_COLS,
@@ -51,14 +51,11 @@ def download_sdss_data(
         mag = cat[0][mag_col]
         magerr = cat[0][magerr_col]
 
-        # magerr = np.array([cat[0][magerr_col]])
-        # magerr = np.hypot(magerr, 0.05)
-
         entry = Photometry.from_position(
             src_position=src_position,
             filter_name=f"sdss_{b}0",
             observed_mag=mag,
-            mag_err=magerr[0],
+            mag_err=magerr,
         )
         all_filters.append(entry)
 

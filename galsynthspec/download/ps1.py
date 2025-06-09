@@ -32,8 +32,10 @@ def download_ps1_data(
 
     all_filters = []
 
-    catalog_data = Catalogs.query_region(
-        src_position, radius=radius_arcsec * u.arcsec, catalog="Panstarrs"
+    catalog_data = Catalogs.query_region(  # pylint: disable=no-member
+        src_position,
+        radius=radius_arcsec * u.arcsec,  # pylint: disable=no-member
+        catalog="Panstarrs",
     )
 
     if len(catalog_data) == 0:
@@ -48,15 +50,6 @@ def download_ps1_data(
 
         mag = match[mag_col]
         mag_err = match[magerr_col]
-
-        # if np.ma.is_masked(mag):
-        #     flux = 0.0
-        #     magerr = mag
-        #
-        # else:
-        #     flux = 10. ** (-0.4 * mag)
-        #     magerr = np.array([match[magerr_col]])
-        #     magerr = np.hypot(magerr, 0.05)[0]
 
         filter_name = f"ps1::{b}" if b in ["y"] else f"sdss_{b}0"
 
