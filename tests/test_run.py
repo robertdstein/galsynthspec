@@ -41,6 +41,7 @@ class TestGalsynthspec(unittest.TestCase):
             ["by-name", test_name],
         )
         print(result.output)
+        print(result.stderr)
         assert result.exit_code == 0
 
         # Check results
