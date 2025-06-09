@@ -2,6 +2,8 @@
 Module for GALEX data
 """
 
+# pylint: disable=duplicate-code
+
 import logging
 
 import numpy as np
