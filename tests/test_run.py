@@ -45,6 +45,7 @@ class TestGalsynthspec(unittest.TestCase):
         logger.error(result.stderr)
         logger.error(result.exception)
         logger.error(result.exit_code)
+        logger.error(result.exc_info)
         logger.info("Checking exit code")
         assert result.exit_code == 0
 
