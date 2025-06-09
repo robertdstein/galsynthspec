@@ -20,7 +20,17 @@ from galsynthspec.model import get_model, get_sps
 logger = logging.getLogger(__name__)
 
 
-def weighted_quantiles(values, weights, quantiles=0.5):
+def weighted_quantiles(
+    values: np.ndarray, weights: np.ndarray, quantiles=0.5
+) -> np.ndarray:
+    """
+    Calculate weighted quantiles of a set of values.
+
+    :param values: 2D array of values for which to calculate the quantiles
+    :param weights:  Weights for the values, must be the same length as values
+    :param quantiles: Quantiles to calculate, can be a single value or a list of values
+    :return: Quantiles of the values, same length as values axis
+    """
     i = np.argsort(values)
     c = np.cumsum(weights[i])
     return values[i[np.searchsorted(c, np.array(quantiles) * c[-1])]]
@@ -75,7 +85,7 @@ class PredictedPhotometry(BaseModel):
     )
 
 
-class Result(BaseModel):
+class FitResult(BaseModel):
     """
     Base model for fitting result
     """
@@ -98,7 +108,7 @@ class Result(BaseModel):
     )
 
     @classmethod
-    def from_file(cls, file_path: Path):
+    def from_file(cls, file_path: Path) -> "FitResult":
         """
         Read the result from a file
 
@@ -125,7 +135,9 @@ class Result(BaseModel):
         """
         Validate the source name
         """
-        assert self.chain.shape[1] == len(self.fit_parameters)
+        assert self.chain.shape[1] == len(  # pylint: disable=no-member
+            self.fit_parameters
+        )
         return self
 
     def sample_from_posterior(self, n_sample: int = 1) -> np.ndarray:
@@ -166,7 +178,9 @@ class Result(BaseModel):
         if obs is None:
             obs = self.obs
 
-        spec, phot, mfrac = self.model.predict(theta, obs=obs, sps=self.sps)
+        spec, phot, mfrac = self.model.predict(  # pylint: disable=no-member
+            theta, obs=obs, sps=self.sps
+        )
         return spec, phot, mfrac
 
     @property
@@ -174,7 +188,7 @@ class Result(BaseModel):
         """
         Get the restframe wavelengths for the best fit
         """
-        return self.best_fit.restframe_wavelengths
+        return self.best_fit.restframe_wavelengths  # pylint: disable=no-member
 
     def get_redshift(self) -> float:
         """
@@ -184,7 +198,7 @@ class Result(BaseModel):
         """
         redshift = self.redshift
         if redshift is None:
-            idx = self.fit_parameters.index("zred")
+            idx = self.fit_parameters.index("zred")  # pylint: disable=no-member
             redshift = weighted_quantiles(
                 self.chain[:, idx],
                 self.weights,

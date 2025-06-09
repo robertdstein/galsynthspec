@@ -10,12 +10,12 @@ import numpy as np
 import pandas as pd
 from prospect.plotting import corner
 
-from galsynthspec.datamodels.result import Result, weighted_quantiles
+from galsynthspec.datamodels.fitresult import FitResult, weighted_quantiles
 
 logger = logging.getLogger(__name__)
 
 
-def plot_corner(res: Result, out_path: Path):
+def plot_corner(res: FitResult, out_path: Path):
     """
     Plot the corner plot of the chain
 

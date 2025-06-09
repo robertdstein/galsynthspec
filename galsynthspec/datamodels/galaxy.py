@@ -10,8 +10,8 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 from pydantic import BaseModel, Field, model_validator
 
+from galsynthspec.datamodels.fitresult import FitResult
 from galsynthspec.datamodels.photometry import Photometry
-from galsynthspec.datamodels.result import Result
 from galsynthspec.download import download_all_data
 from galsynthspec.paths import get_output_dir
 
@@ -40,10 +40,14 @@ class Galaxy(BaseModel):
         if self.source_name is None:
             src_position = SkyCoord(self.ra_deg, self.dec_deg, unit="deg")
             ra_str = src_position.ra.to_string(
-                unit=u.hour, sep="", precision=2, pad=True
+                unit=u.hour, sep="", precision=2, pad=True  # pylint: disable=no-member
             )
             dec_str = src_position.dec.to_string(
-                unit=u.degree, sep="", precision=2, alwayssign=True, pad=True
+                unit=u.degree,  # pylint: disable=no-member
+                sep="",
+                precision=2,
+                alwayssign=True,
+                pad=True,
             )
             j_name = f"J{ra_str}{dec_str}"
             logger.info(f"Source name not provided. Using J2000 name {j_name}")
@@ -141,7 +145,7 @@ class Galaxy(BaseModel):
         df = pd.read_json(self.photometry_cache_file)
         return [Photometry.model_validate(p) for p in df.to_dict(orient="records")]
 
-    def load_results(self) -> Result:
+    def load_results(self) -> FitResult:
         """
         Load the results for the source
 
@@ -153,4 +157,4 @@ class Galaxy(BaseModel):
             )
 
         logger.info(f"Loading results from {self.mcmc_cache_file}")
-        return Result.from_file(self.mcmc_cache_file)
+        return FitResult.from_file(self.mcmc_cache_file)

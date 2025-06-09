@@ -1,11 +1,15 @@
+"""
+This module provides functionality to analyse the results of the fitting process
+"""
+
+from galsynthspec.datamodels.fitresult import FitResult
 from galsynthspec.datamodels.galaxy import Galaxy
-from galsynthspec.datamodels.result import Result
 from galsynthspec.plotting.corner import plot_corner
 from galsynthspec.plotting.sed import generate_sed_plot
 from galsynthspec.utils.predict import get_predicted_photometry
 
 
-def analyse_results(galaxy: Galaxy, res: Result):
+def analyse_results(galaxy: Galaxy, res: FitResult):
     """
     Analyse the results of the fitting process and plot the corner plot.
 

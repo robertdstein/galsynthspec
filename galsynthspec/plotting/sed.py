@@ -10,13 +10,13 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from galsynthspec.datamodels.result import Result
+from galsynthspec.datamodels.fitresult import FitResult
 
 logger = logging.getLogger(__name__)
 
 
 def generate_sed_plot(
-    res: Result,
+    res: FitResult,
     out_dir: Path,
 ) -> pd.DataFrame:
     """

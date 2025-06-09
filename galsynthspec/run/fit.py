@@ -9,8 +9,8 @@ from prospect.fitting import fit_model, lnprobfn
 from prospect.io import write_results as writer
 from prospect.utils.obsutils import fix_obs
 
+from galsynthspec.datamodels.fitresult import FitResult
 from galsynthspec.datamodels.galaxy import Galaxy
-from galsynthspec.datamodels.result import Result
 from galsynthspec.model import get_model, get_sps
 
 logger = logging.getLogger(__name__)
@@ -87,7 +87,7 @@ def fit_galaxy(galaxy: Galaxy, use_cache: bool = True):
     )
 
 
-def get_galaxy_results(galaxy: Galaxy, use_cache: bool = True) -> Result:
+def get_galaxy_results(galaxy: Galaxy, use_cache: bool = True) -> FitResult:
     """
     Generate synthetic spectra for a given galaxy.
 

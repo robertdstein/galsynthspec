@@ -1,10 +1,15 @@
+"""
+This module predicts the photometry for a galaxy
+based on the results of a fitting procedure.
+"""
+
 import pandas as pd
-from prospect.sources.constants import ckms, cosmo, jansky_cgs, lightspeed
+from prospect.sources.constants import jansky_cgs, lightspeed
 from scipy import stats
 from sedpy.observate import getSED, load_filters
 
+from galsynthspec.datamodels.fitresult import FitResult
 from galsynthspec.datamodels.galaxy import Galaxy
-from galsynthspec.datamodels.result import Result
 from galsynthspec.utils.extinction import get_extinction_for_filter
 
 DEFAULT_FILTER_LIST = [
@@ -69,17 +74,20 @@ def get_photometry_quantile(angstroms, df, q, filters: list[str]):
 
 def get_predicted_photometry(
     galaxy: Galaxy,
-    result: Result,
+    result: FitResult,
     sample_df: pd.DataFrame | None = None,
     filter_list: None | list[str] = None,
 ) -> pd.DataFrame:
     """
-    Function to get the predicted photometry for a galaxy based on the result of a fitting procedure.
+    Function to get the predicted photometry for a galaxy based
+    on the result of a fitting procedure.
 
     :param galaxy: Galaxy
     :param result: Result of the MCMC fitting procedure.
-    :param sample_df: DataFrame containing the sampled SEDs from the posterior. If None, it will sample 1000 SEDs.
-    :param filter_list: List of filters to predict photometry for. If None, it will use a default list of filters.
+    :param sample_df: DataFrame containing the sampled SEDs from the posterior.
+                        If None, it will sample 1000 SEDs.
+    :param filter_list: List of filters to predict photometry for.
+                        If None, it will use a default list of filters.
     :return: pd.DataFrame containing the predicted photometry.
     """
 
@@ -106,30 +114,27 @@ def get_predicted_photometry(
         angstroms, sample_df, lower_percentile, filters=filter_list
     )
 
-    true = [
-        photometry_dict[x].observed_mag if x in photometry_dict else None
-        for x in filter_list
-    ]
-    unextincted = [
-        photometry_dict[x].mag if x in photometry_dict else None for x in filter_list
-    ]
-    ul = [
-        photometry_dict[x].mag_err if x in photometry_dict else None
-        for x in filter_list
-    ]
-
-    extinction = [get_extinction_for_filter(galaxy.sky_coord, x) for x in filter_list]
-
     phot_df = pd.DataFrame(
         {
             "band": filter_list,
             "predicted_mag": med,
             "sigma+": med - up_pred,
             "sigma-": lower_pred - med,
-            "measured_mag": true,
-            "measured_err": ul,
-            "extinction": extinction,
-            "measured_mag_deextincted": unextincted,
+            "measured_mag": [
+                photometry_dict[x].observed_mag if x in photometry_dict else None
+                for x in filter_list
+            ],
+            "measured_err": [
+                photometry_dict[x].mag_err if x in photometry_dict else None
+                for x in filter_list
+            ],
+            "extinction": [
+                get_extinction_for_filter(galaxy.sky_coord, x) for x in filter_list
+            ],
+            "measured_mag_deextincted": [
+                photometry_dict[x].mag if x in photometry_dict else None
+                for x in filter_list
+            ],
         }
     )
     phot_df["predicted_mag_extincted"] = (
