@@ -68,6 +68,8 @@ def download_tns(source_name: str) -> pd.Series:
 
     res = df.iloc[0].copy()
 
+    print(res)
+
     # Add coordinates in degrees
     c = SkyCoord(
         res["RA"], res["DEC"], unit=(u.hourangle, u.deg)  # pylint: disable=no-member
