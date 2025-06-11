@@ -34,7 +34,8 @@ dependencies = [
     "python-dotenv",
     "click",
     "tqdm",
-    "sfdmap@git+https://github.com/robertdstein/sfdmap",
+    "sfdmap2",
+#    "sfdmap@git+https://github.com/robertdstein/sfdmap",
     "extinction",
 ]
 [project.optional-dependencies]

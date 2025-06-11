@@ -7,9 +7,9 @@ import logging
 
 import extinction
 import numpy as np
-import sfdmap
 from astropy.coordinates import SkyCoord
 from sedpy.observate import load_filters
+from sfdmap2 import sfdmap
 
 from galsynthspec.paths import sfd_path
 
