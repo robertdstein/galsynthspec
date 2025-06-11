@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "galsynthspec"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Robert Stein", email = "rdstein@caltech.edu"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "jupyter",
+    "matplotlib",
+    "astropy",
+    "matplotlib",
+    "numpy <2.0.0",
+    "pandas",
+    "astroquery",
+    "astro-prospector<2.0.0",
+    "fsps",
+    "dynesty",
+    "astro-sedpy",
+    "h5py",
+    "corner",
+    "scipy",
+    "dynesty",
+    "sedpy",
+    "pydantic>=2.0.0",
+    "numpydantic",
+    "python-dotenv",
+    "click",
+    "tqdm",
+    "sfdmap2",
+    "extinction",
+]
+[project.optional-dependencies]
+dev = [
+    "black == 24.4.2",
+    "isort == 6.0.0",
+    "pylint == 3.3.4",
+    "coveralls",
+    "pre-commit",
+]
+[project.urls]
+Homepage = "https://github.com/robertdstein/galsynthspec"
+
+[tool.setuptools]
+packages = ["galsynthspec"]
+
+[project.scripts]
+galsynthspec = "galsynthspec.cli.wrappers:cli"
+
+[tool.coverage.run]
+source = ["galsynthspec"]
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "raise KeyError",
+    "except KeyError",
+    "raise ValueError",
+    "except JSONDecodeError:",
+    "raise requests.exceptions.RequestException",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if False:",
+    'if __name__ == "__main__":',
+    "err =",
+    "logger.error",
+    "raise"
+    ]
+ignore_errors = true
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.format]
+max-line-length = "88"
+disable=["logging-fstring-interpolation"]
+good-names=["ax", "ra", "df", "pi", "i"]
+exclude-too-few-public-methods=["pydantic.*"]
+extension-pkg-whitelist=["pydantic", "extinction", "astroquery"]
