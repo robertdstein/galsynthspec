@@ -29,7 +29,7 @@ def generate_sed_plot(
 
     obs_wavelengths = res.rest_frame_wavelengths * (1 + res.get_redshift())
 
-    df = res.sample_sed_from_posterior(n_sample=100)
+    df = res.sample_sed_from_posterior(n_sample=1000)
 
     plt.figure()
     ax = plt.subplot(111)
