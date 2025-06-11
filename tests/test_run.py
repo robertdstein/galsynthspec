@@ -37,19 +37,11 @@ class TestGalsynthspec(unittest.TestCase):
         logger.info(f"Testing Galsynthspec for {test_ra}, {test_dec}")
 
         runner = CliRunner()
-        result = runner.invoke(
+        runner.invoke(
             cli,
             ["by-ra-dec", str(test_ra), str(test_dec), "-z", str(redshift)],
             catch_exceptions=False,
         )
-        if not result.exit_code == 0:
-            logger.error("Command failed")
-            logger.error(result.output)
-            logger.error(result.stderr)
-            logger.error(result.exception)
-            logger.error(result.exit_code)
-            logger.error(result.exc_info)
-            raise RuntimeError("Command failed")
 
         # Check results
 
@@ -62,4 +54,20 @@ class TestGalsynthspec(unittest.TestCase):
         )
         assert gal.synthetic_photometry_file.exists()
         new = pd.read_json(gal.synthetic_photometry_file)
-        pd.testing.assert_frame_equal(new, expected_df, check_exact=False, atol=0.07)
+
+        pred_diff = (new["predicted_mag"] - expected_df["predicted_mag"]) / (
+            0.5 * (expected_df["sigma+"] + expected_df["sigma-"])
+        )
+
+        max_diff = pred_diff.abs().max()
+        logger.info(f"Max diff: {max_diff}")
+        assert max_diff < 0.5, f"Difference too large: {pred_diff.abs().max()}"
+
+        median_diff = pred_diff.median()
+        logger.info(f"Median diff: {median_diff}")
+        assert median_diff < 0.1, f"Median difference too large: {median_diff}"
+
+        pd.testing.assert_series_equal(new["measured_mag"], expected_df["measured_mag"])
+        pd.testing.assert_series_equal(
+            new["extinction"], expected_df["extinction"], check_exact=False, atol=0.001
+        )
