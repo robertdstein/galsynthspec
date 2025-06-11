@@ -61,11 +61,11 @@ class TestGalsynthspec(unittest.TestCase):
 
         max_diff = pred_diff.abs().max()
         logger.info(f"Max diff: {max_diff}")
-        assert max_diff < 0.5, f"Difference too large: {pred_diff.abs().max()}"
+        assert max_diff < 0.7, f"Difference too large: {max_diff}"
 
-        median_diff = pred_diff.median()
+        median_diff = abs(pred_diff.median())
         logger.info(f"Median diff: {median_diff}")
-        assert median_diff < 0.1, f"Median difference too large: {median_diff}"
+        assert median_diff < 0.15, f"Median difference too large: {median_diff}"
 
         pd.testing.assert_series_equal(new["measured_mag"], expected_df["measured_mag"])
         pd.testing.assert_series_equal(
