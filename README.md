@@ -1,5 +1,10 @@
 # galsynthspec
- Galaxy Synthetic Spectrum fitting
+Galaxy Synthetic Spectrum fitting
+
+[![PyPI version](https://badge.fury.io/py/galsynthspec.svg)](https://badge.fury.io/py/galsynthspec)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/robertdstein/galsynthspec/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/robertdstein/galsynthspec/actions/workflows/continuous_integration.yml)
+[![Coverage Status](https://coveralls.io/repos/github/robertdstein/galsynthspec/badge.svg?branch=main)](https://coveralls.io/github/robertdstein/galsynthspec?branch=main)
 
 Galsynthspec is a Python package for fitting synthetic galaxy spectra to observed data. It is designed to work with the `sfdmap` package for spectral fitting and provides tools for analyzing and visualizing the results.
 
