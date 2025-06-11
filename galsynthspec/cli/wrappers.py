@@ -27,12 +27,15 @@ def cli():
 @click.option(
     "--use-cache/--no-cache", default=True, help="Enable using cached results"
 )
-def run_by_name(name, use_cache):
+@click.option("-z", "--redshift", type=float, default=None)
+def run_by_name(name, use_cache: bool, redshift: float = None):
     """
     Run the galaxy synthetic spectra pipeline for a given galaxy name.
     """
     logger.info(f"Running pipeline for source name {name}")
     gal = query_by_name(name)
+    if gal.redshift is None:
+        gal.redshift = redshift
     run_on_galaxy(gal, use_cache=use_cache)
 
 
