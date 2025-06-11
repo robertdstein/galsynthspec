@@ -35,7 +35,6 @@ dependencies = [
     "click",
     "tqdm",
     "sfdmap2",
-#    "sfdmap@git+https://github.com/robertdstein/sfdmap",
     "extinction",
 ]
 [project.optional-dependencies]
