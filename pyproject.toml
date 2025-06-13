@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "galsynthspec"
-version = "0.1.1"
+version = "0.2.0"
 description = "Synthesize galaxy spectra from photometry"
 authors = [
     {name = "Robert Stein", email = "rdstein@caltech.edu"}
