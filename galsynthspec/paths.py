@@ -12,11 +12,11 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-_data_dir = os.getenv("GALSPECSYNTH_DATA_DIR", None)
+_data_dir = os.getenv("GALSYNTHSPEC_DATA_DIR", None)
 
 
 if _data_dir is None:
-    data_dir = Path.home() / "Data/galspecsynth"
+    data_dir = Path.home() / "Data/galsynthspec"
     logger.warning(
         f"Environment variable GALSPECSYNTH_DATA_DIR not set. "
         f"Using default data directory {data_dir}."
@@ -26,7 +26,7 @@ else:
     data_dir = Path(_data_dir)
     logger.info(
         f"Using data directory {data_dir} set by "
-        f"environment variable GALSPECSYNTH_DATA_DIR."
+        f"environment variable GALSYNTHSPEC_DATA_DIR."
     )
 
 
