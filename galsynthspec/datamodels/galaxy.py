@@ -30,7 +30,9 @@ class Galaxy(BaseModel):
     dec_deg: float = Field(
         description="Declination of the source in degrees", ge=-90.0, le=90.0
     )
-    redshift: None | float = Field(description="Redshift of the source", ge=0.0)
+    redshift: None | float = Field(
+        description="Redshift of the source", ge=0.0, allow_inf_nan=True
+    )
 
     @model_validator(mode="after")
     def validate_source_name(self):

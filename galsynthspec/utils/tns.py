@@ -66,13 +66,14 @@ def download_tns(source_name: str) -> pd.Series:
         logger.error(f"No TNS data found for {source_name}.")
         raise ValueError(f"No TNS data found for {source_name}.")
 
-    if df.columns == ["<html>"]:
-        if "Forbidden" in df.iloc[0, 0]:
-            logger.error(
-                "TNS API access forbidden. "
-                "Please check your network connection or TNS API status."
-            )
-            raise ConnectionError("TNS API access forbidden.")
+    if len(df.columns) == 1:
+        if df.columns == ["<html>"]:
+            if "Forbidden" in df.iloc[0, 0]:
+                logger.error(
+                    "TNS API access forbidden. "
+                    "Please check your network connection or TNS API status."
+                )
+                raise ConnectionError("TNS API access forbidden.")
 
     res = df.iloc[0].copy()
 
