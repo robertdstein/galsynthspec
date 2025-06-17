@@ -16,11 +16,11 @@ RUN apt-get update && apt-get install -y \
 
 FROM base AS sfdmap
 
-ENV GALSPECSYNTH_DATA_DIR=/mydata
+ENV GALSYNTHSPEC_DATA_DIR=/mydata
 ENV SFDMAP_DATA_DIR=/sfddata
 
 # Create directories for data
-RUN mkdir -p $GALSPECSYNTH_DATA_DIR \
+RUN mkdir -p $GALSYNTHSPEC_DATA_DIR \
     && mkdir -p $SFDMAP_DATA_DIR
 
 RUN wget https://github.com/kbarbary/sfddata/archive/master.tar.gz
