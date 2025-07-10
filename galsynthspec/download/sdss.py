@@ -44,6 +44,10 @@ def download_sdss_data(
         logger.info("No SDSS data found")
         return all_filters
 
+    if cat.colnames == ["<html><head>"]:
+        logger.warning("SDSS query returned HTML response, likely an error.")
+        return all_filters
+
     for i, b in enumerate(SDSS_BANDS):
         mag_col = SDSS_MAG_COLS[i]
         magerr_col = SDSS_MAGERR_COLS[i]
