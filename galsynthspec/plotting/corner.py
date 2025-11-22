@@ -37,8 +37,12 @@ def plot_corner(res: FitResult, out_path: Path):
 
     logger.info(f"Corner plot saved to {out_path}")
 
+    bounds = res.model.theta_bounds()
+
     results = []
     for i, param in enumerate(res.fit_parameters):
+
+        prior = res.model.config_dict[param]["prior"].__class__.__name__
 
         logify = param in ["mass"]
 
@@ -51,6 +55,9 @@ def plot_corner(res: FitResult, out_path: Path):
                 "median": quantiles[1],
                 "sigma-": quantiles[1] - quantiles[0],
                 "sigma+": quantiles[2] - quantiles[1],
+                "lower_bound": bounds[i][0] if not logify else np.log10(bounds[i][0]),
+                "upper_bound": bounds[i][1] if not logify else np.log10(bounds[i][1]),
+                "prior": prior,
             }
         )
 
