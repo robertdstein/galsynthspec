@@ -3,6 +3,7 @@ CLI wrapper for galaxy synthetic spectra
 """
 
 import logging
+import sys
 
 import click
 
@@ -10,9 +11,16 @@ from galsynthspec.datamodels.galaxy import Galaxy
 from galsynthspec.run import run_on_galaxy
 from galsynthspec.utils.query import query_by_name
 
-logger = logging.getLogger(__name__)
+base_logger = logging.getLogger("galsynthspec")
+if not base_logger.handlers:
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s")
+    handler.setFormatter(formatter)
+    base_logger.addHandler(handler)
+    base_logger.propagate = False  # prevent duplicate messages via root
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 @click.group()

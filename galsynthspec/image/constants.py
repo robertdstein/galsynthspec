@@ -31,7 +31,7 @@ sedpy_map = {
 SURVEYS_ALL = ["GALEX", "PanSTARRS", "SDSS", "2MASS", "WISE", "LegacySurvey"]
 
 # Priority for reference mask/aperture
-REF_PRIORITY = ["LegacySurvey", "PanSTARRS", "SDSS"]
+REF_PRIORITY = ["PanSTARRS", "SDSS", "LegacySurvey"]
 
 # Coadd filter recipe per ref survey (string concat is supported)
 COADD_FILTERS = {

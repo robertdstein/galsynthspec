@@ -11,6 +11,8 @@ from galsynthspec.paths import data_dir
 
 os.environ["workdir"] = str(data_dir)  # Set workdir for hostphot, before importing
 
+import logging
+
 from hostphot.cutouts import download_images
 from hostphot.photometry import global_photometry as gp
 from hostphot.processing import coadd_images, masking
@@ -19,10 +21,12 @@ from hostphot.surveys_utils import (
     get_survey_filters,
     load_yml,
 )
+from requests.exceptions import HTTPError
 
 # Load filter configuration (for AB offsets etc.)
 filters_config = load_yml(filters_file)
 
+logger = logging.getLogger(__name__)
 
 CORRECT_EXTINCTION = True
 
@@ -37,14 +41,18 @@ def download_all(name: str, host_ra: float, host_dec: float):
     :return: None
     """
     for survey_name in SURVEYS_ALL:
-        download_images(
-            name,
-            host_ra,
-            host_dec,
-            survey=survey_name,
-            overwrite=False,
-            save_input=True,
-        )
+        try:
+            download_images(
+                name,
+                host_ra,
+                host_dec,
+                survey=survey_name,
+                overwrite=False,
+                save_input=True,
+            )
+        except HTTPError as e:
+            logger.error(f"Error downloading images for {survey_name}")
+            logger.error(e)
 
 
 def build_common_mask(
@@ -84,22 +92,27 @@ def build_common_mask(
     )
 
     # 3) Propagate that mask to surveys except WISE
-    apply_surveys = ["GALEX", "2MASS", "LegacySurvey", "PanSTARRS", "SDSS"]
+    apply_surveys = [x for x in SURVEYS_ALL if x not in ["WISE"]]
     for survey_name in apply_surveys:
         filters = get_survey_filters(survey_name)
         for filter_name in filters:
-            masking.create_mask(
-                name,
-                host_ra,
-                host_dec,
-                filt=filter_name,
-                survey=survey_name,
-                ref_filt=ref_filter,
-                ref_survey=ref_survey,  # use common mask
-                save_plots=False,
-                save_mask_params=False,
-                save_input=False,
-            )
+            try:
+                masking.create_mask(
+                    name,
+                    host_ra,
+                    host_dec,
+                    filt=filter_name,
+                    survey=survey_name,
+                    ref_filt=ref_filter,
+                    ref_survey=ref_survey,  # use common mask
+                    save_plots=False,
+                    save_mask_params=False,
+                    save_input=False,
+                )
+            except FileNotFoundError as e:
+                logger.warning(
+                    f"Skipping mask propagation for {survey_name} {filter_name}: {e}"
+                )
 
 
 def fit_common_kron(
@@ -152,7 +165,7 @@ def run_common_phot(
     :param ref_filter: Reference filter string
     :return:
     """
-    for survey_name in ["GALEX", "2MASS", "LegacySurvey", "PanSTARRS", "SDSS"]:
+    for survey_name in [x for x in SURVEYS_ALL if x not in ["WISE"]]:
         gp.multi_band_phot(
             name,
             host_ra,
@@ -167,7 +180,7 @@ def run_common_phot(
             save_plots=True,
             save_results=True,
             save_aperture_params=False,
-            raise_exception=True,
+            raise_exception=False,
         )
 
 
