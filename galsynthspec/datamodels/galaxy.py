@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from galsynthspec.datamodels.fitresult import FitResult
 from galsynthspec.datamodels.photometry import Photometry
-from galsynthspec.download import download_all_data
+from galsynthspec.image import batch_collate_photometry, batch_download_images
 from galsynthspec.paths import get_output_dir, get_photometry_path
 
 logger = logging.getLogger(__name__)
@@ -106,26 +106,19 @@ class Galaxy(BaseModel):
         """
         return self.base_output_dir / "corner.pdf"
 
-    def get_photometry(
-        self, radius_arcsec: float = 3.0, use_cache: bool = True
-    ) -> list[Photometry]:
+    def get_photometry(self, use_cache: bool = True) -> list[Photometry]:
         """
         Get the photometry data for the source
 
-        :param radius_arcsec: float The radius of the search in arcseconds
         :param use_cache: bool If True, use the cached photometry data if available
 
         :return: list[Photometry] The photometry data
         """
-        if self.photometry_cache_file.is_file() and use_cache:
-            return self.load_photometry_from_cache()
+        if not self.photometry_cache_file.is_file() & use_cache:
+            batch_download_images(self.source_name, self.sky_coord)
+            batch_collate_photometry(self.source_name, self.sky_coord)
 
-        raise
-
-        photometry = download_all_data(self.sky_coord, radius_arcsec=radius_arcsec)
-        self.export_photometry_to_cache(photometry)
-
-        return photometry
+        return self.load_photometry_from_cache()
 
     def export_photometry_to_cache(self, photometry: list[Photometry]):
         """

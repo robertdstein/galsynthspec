@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "galsynthspec"
-version = "0.2.1"
+version = "1.0.0"
 description = "Synthesize galaxy spectra from photometry"
 authors = [
     {name = "Robert Stein", email = "rdstein@umd.edu"},
@@ -18,10 +18,10 @@ dependencies = [
     "matplotlib",
     "astropy",
     "matplotlib",
-    "numpy <2.0.0",
+    "numpy >2.0.0",
     "pandas",
     "astroquery",
-    "astro-prospector@git+https://github.com/bd-j/prospector@main",
+    "astro-prospector@git+https://github.com/robertdstein/prospector@v1.4.1",
     "fsps",
     "dynesty",
     "astro-sedpy",
@@ -41,9 +41,9 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev = [
-    "black == 25.9.0",
-    "isort == 6.0.1",
-    "pylint == 3.3.8",
+    "black == 25.11.0",
+    "isort == 7.0.0",
+    "pylint == 4.0.4",
     "coveralls",
     "pre-commit",
 ]

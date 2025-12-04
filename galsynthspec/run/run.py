@@ -3,7 +3,6 @@ Module for running the galaxy synthetic spectra pipeline.
 """
 
 from galsynthspec.datamodels.galaxy import Galaxy
-from galsynthspec.image import batch_collate_photometry, batch_download_images
 from galsynthspec.run.analyse import analyse_results
 from galsynthspec.run.fit import get_galaxy_results
 
@@ -16,8 +15,5 @@ def run_on_galaxy(galaxy: Galaxy, use_cache: bool = True):
     :param use_cache: bool Whether to use cached results if available.
     :return:
     """
-    batch_download_images(galaxy, use_cache=use_cache)
-    batch_collate_photometry(galaxy)
-
     res = get_galaxy_results(galaxy, use_cache=use_cache)
     analyse_results(galaxy, res)
