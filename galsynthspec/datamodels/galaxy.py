@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field, model_validator
 from galsynthspec.datamodels.fitresult import FitResult
 from galsynthspec.datamodels.photometry import Photometry
 from galsynthspec.download import download_all_data
-from galsynthspec.paths import get_output_dir
+from galsynthspec.paths import get_output_dir, get_photometry_path
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,8 @@ class Galaxy(BaseModel):
         """
         Get the cache file for the photometry
         """
-        return self.base_output_dir / "photometry.json"
+        return get_photometry_path(self.source_name)
+        # return self.base_output_dir / "photometry.json"
 
     @property
     def mcmc_cache_file(self) -> Path:
@@ -118,6 +119,8 @@ class Galaxy(BaseModel):
         """
         if self.photometry_cache_file.is_file() and use_cache:
             return self.load_photometry_from_cache()
+
+        raise
 
         photometry = download_all_data(self.sky_coord, radius_arcsec=radius_arcsec)
         self.export_photometry_to_cache(photometry)

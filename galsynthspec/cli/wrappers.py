@@ -51,5 +51,7 @@ def run_by_ra_dec(ra_deg: float, dec_deg: float, name=None, redshift=None):
     logger.info(f"Running pipeline for position {ra_deg} {dec_deg}")
 
     gal = Galaxy(source_name=name, ra_deg=ra_deg, dec_deg=dec_deg, redshift=redshift)
+    if gal.redshift is None:
+        gal.redshift = redshift
 
     run_on_galaxy(gal)

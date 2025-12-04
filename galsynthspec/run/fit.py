@@ -27,6 +27,14 @@ def fit_galaxy(galaxy: Galaxy, use_cache: bool = True):
 
     photometry_list = galaxy.get_photometry(use_cache=use_cache)
 
+    unique_photometry = {}
+
+    for p in photometry_list:
+        if p.base_filter_name not in unique_photometry:
+            unique_photometry[p.base_filter_name] = p
+
+    photometry_list = list(unique_photometry.values())
+
     filters = [p.filter for p in photometry_list]
     maggies = np.array([p.maggies for p in photometry_list])
 
