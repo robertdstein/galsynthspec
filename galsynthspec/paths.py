@@ -29,8 +29,6 @@ else:
         f"environment variable GALSYNTHSPEC_DATA_DIR."
     )
 
-# images_dir = data_dir / "images"
-
 sfd_path = Path(
     os.getenv(
         "SFDMAP_DATA_DIR",
