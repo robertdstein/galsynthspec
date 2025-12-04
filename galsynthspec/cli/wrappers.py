@@ -12,6 +12,7 @@ from galsynthspec.run import run_on_galaxy
 from galsynthspec.utils.query import query_by_name
 
 base_logger = logging.getLogger("galsynthspec")
+base_logger.setLevel(logging.INFO)
 if not base_logger.handlers:
     handler = logging.StreamHandler(sys.stderr)
     handler.setLevel(logging.INFO)

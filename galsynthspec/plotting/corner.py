@@ -22,22 +22,10 @@ def plot_corner(res: FitResult, out_path: Path):
     :param res: The result of the fitting
     :param out_path: The output of the sampling
     """
-    _, ndim = res.chain.shape
-    cfig, axes = plt.subplots(ndim, ndim, figsize=(10, 9))
-    corner.allcorner(
-        res.chain.T,
-        res.fit_parameters,
-        axes,
-        weights=res.weights,
-        color="royalblue",
-        show_titles=True,
-    )
-    plt.savefig(out_path, bbox_inches="tight")
-    plt.close(cfig)
-
-    logger.info(f"Corner plot saved to {out_path}")
 
     bounds = res.model.theta_bounds()
+
+    all_vals = []
 
     results = []
     for i, param in enumerate(res.fit_parameters):
@@ -47,6 +35,7 @@ def plot_corner(res: FitResult, out_path: Path):
         logify = param in ["mass"]
 
         vals = res.chain[:, i] if not logify else np.log10(res.chain[:, i])
+        all_vals.append(vals)
 
         quantiles = weighted_quantiles(vals, res.weights, [0.16, 0.5, 0.84])
         results.append(
@@ -64,3 +53,18 @@ def plot_corner(res: FitResult, out_path: Path):
     df = pd.DataFrame(results)
     print(df)
     df.to_json(out_path.parent / "fit_results.json")
+
+    _, ndim = res.chain.shape
+    cfig, axes = plt.subplots(ndim, ndim, figsize=(10, 9))
+    corner.allcorner(
+        np.array(all_vals),
+        df["parameter"].tolist(),
+        axes,
+        weights=res.weights,
+        color="royalblue",
+        show_titles=True,
+    )
+    plt.savefig(out_path, bbox_inches="tight")
+    plt.close(cfig)
+
+    logger.info(f"Corner plot saved to {out_path}")
