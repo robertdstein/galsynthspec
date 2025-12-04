@@ -44,7 +44,12 @@ def run_by_name(name, use_cache: bool, redshift: float = None):
 @click.argument("dec_deg", type=float)
 @click.option("-n", "--name", type=str, default=None)
 @click.option("-z", "--redshift", type=float, default=None)
-def run_by_ra_dec(ra_deg: float, dec_deg: float, name=None, redshift=None):
+@click.option(
+    "--use-cache/--no-cache", default=True, help="Enable using cached results"
+)
+def run_by_ra_dec(
+    ra_deg: float, dec_deg: float, use_cache: bool, name=None, redshift=None
+):
     """
     Run the galaxy synthetic spectra pipeline for a given galaxy name.
     """
@@ -54,4 +59,4 @@ def run_by_ra_dec(ra_deg: float, dec_deg: float, name=None, redshift=None):
     if gal.redshift is None:
         gal.redshift = redshift
 
-    run_on_galaxy(gal)
+    run_on_galaxy(gal, use_cache=use_cache)

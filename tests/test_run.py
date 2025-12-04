@@ -39,7 +39,14 @@ class TestGalsynthspec(unittest.TestCase):
         runner = CliRunner()
         runner.invoke(
             cli,
-            ["by-ra-dec", str(test_ra), str(test_dec), "-z", str(redshift)],
+            [
+                "by-ra-dec",
+                str(test_ra),
+                str(test_dec),
+                "--no-cache",
+                "-z",
+                str(redshift),
+            ],
             catch_exceptions=False,
         )
 
