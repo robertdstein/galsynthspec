@@ -15,6 +15,5 @@ def run_on_galaxy(galaxy: Galaxy, use_cache: bool = True):
     :param use_cache: bool Whether to use cached results if available.
     :return:
     """
-
     res = get_galaxy_results(galaxy, use_cache=use_cache)
     analyse_results(galaxy, res)

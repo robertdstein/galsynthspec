@@ -4,12 +4,12 @@ Module to iteratively download photometry data for a given galaxy.
 
 from astropy.coordinates import SkyCoord
 
+from galsynthspec.catalog.galex import download_galex_data
+from galsynthspec.catalog.ps1 import download_ps1_data
+from galsynthspec.catalog.sdss import download_sdss_data
+from galsynthspec.catalog.twomass import download_twomass_data
+from galsynthspec.catalog.wise import download_wise_data
 from galsynthspec.datamodels.photometry import Photometry
-from galsynthspec.download.galex import download_galex_data
-from galsynthspec.download.ps1 import download_ps1_data
-from galsynthspec.download.sdss import download_sdss_data
-from galsynthspec.download.twomass import download_twomass_data
-from galsynthspec.download.wise import download_wise_data
 
 
 def download_all_data(

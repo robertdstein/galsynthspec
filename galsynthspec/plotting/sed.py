@@ -14,6 +14,9 @@ from galsynthspec.datamodels.fitresult import FitResult
 
 logger = logging.getLogger(__name__)
 
+GOLDEN_RATIO = 1.618
+BASE_WIDTH = 5.0
+
 
 def generate_sed_plot(
     res: FitResult,
@@ -31,7 +34,8 @@ def generate_sed_plot(
 
     df = res.sample_sed_from_posterior(n_sample=1000)
 
-    plt.figure()
+    plt.figure(figsize=(BASE_WIDTH, BASE_WIDTH / GOLDEN_RATIO))
+
     ax = plt.subplot(111)
 
     # Plot Median

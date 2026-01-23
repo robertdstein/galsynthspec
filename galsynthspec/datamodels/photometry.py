@@ -15,14 +15,20 @@ class Photometry(BaseModel):
     """
 
     filter_name: str = Field(description="Name of the filter")
+    base_filter_name: str = Field(description="Name of the base filter")
     observed_mag: float = Field(description="AB Magnitude for the photometry")
     extinction: float = Field(description="Extinction factor for the photometry")
-    vega_mag: float | None = Field(
-        description="Vega Magnitude for the photometry", default=None
+    raw_mag: float | None = Field(
+        description="Magnitude for the photometry in native photometric system",
+        default=None,
     )
     mag_err: float = Field(description="Error in the photometry")
     systematic_error: float = Field(
         description="Systematic error in the photometry", default=0.05
+    )
+
+    origin: str | None = Field(
+        description="Origin of the photometry data", default=None
     )
 
     @property

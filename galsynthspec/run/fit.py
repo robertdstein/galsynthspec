@@ -5,6 +5,7 @@ Module to actually run galaxy synthesis and spectral synthesis.
 import logging
 
 import numpy as np
+import pandas as pd
 from prospect.fitting import fit_model, lnprobfn
 from prospect.io import write_results as writer
 from prospect.utils.obsutils import fix_obs
@@ -26,6 +27,15 @@ def fit_galaxy(galaxy: Galaxy, use_cache: bool = True):
     """
 
     photometry_list = galaxy.get_photometry(use_cache=use_cache)
+
+    unique_photometry = {}
+
+    for p in photometry_list:
+        if p.base_filter_name not in unique_photometry:
+            if pd.notnull(p.observed_mag):
+                unique_photometry[p.base_filter_name] = p
+
+    photometry_list = list(unique_photometry.values())
 
     filters = [p.filter for p in photometry_list]
     maggies = np.array([p.maggies for p in photometry_list])

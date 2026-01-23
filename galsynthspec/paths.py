@@ -29,7 +29,6 @@ else:
         f"environment variable GALSYNTHSPEC_DATA_DIR."
     )
 
-
 sfd_path = Path(
     os.getenv(
         "SFDMAP_DATA_DIR",
@@ -48,3 +47,13 @@ def get_output_dir(source_name: str) -> Path:
     out_dir = data_dir / source_name
     out_dir.mkdir(parents=True, exist_ok=True)
     return out_dir
+
+
+def get_photometry_path(name: str) -> Path:
+    """
+    Get the path to the photometry directory for a given target name.
+
+    :param name: Source name
+    :return: Path to photometry directory
+    """
+    return get_output_dir(source_name=name) / "image_photometry.json"

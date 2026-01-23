@@ -23,6 +23,7 @@ coordinates, and identify a likely host using PS1.
 * [FSPS](https://github.com/cconroy20/fsps)
 * [prospector](https://github.com/bd-j/prospector)
 * [sfdmap](https://github.com/AmpelAstro/sfdmap2)
+* [hostphot](https://github.com/temuller/hostphot)
 
 ## Installation
 
