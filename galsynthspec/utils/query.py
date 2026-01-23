@@ -36,7 +36,9 @@ def load_source_info(name: str, use_cache: bool = True) -> pd.Series:
     return get_tns_by_name(name, use_cache=use_cache)
 
 
-def query_by_name(name: str, use_cache: bool = True) -> Galaxy:
+def query_by_name(
+    name: str, use_cache: bool = True, redshift: float | None = None
+) -> Galaxy:
     """
     Query the SkyPortal API for a source by ZTF or AT name.
     Create a Galaxy object centered on the nearest Panstarrs match.
@@ -50,23 +52,38 @@ def query_by_name(name: str, use_cache: bool = True) -> Galaxy:
 
     src_ra, src_dec = data["ra"], data["dec"]
 
-    redshift = data["redshift"] if "redshift" in data else None
+    if redshift is None:
+        redshift = data["redshift"] if "redshift" in data else None
+    elif "redshift" in data:
+        msg = (
+            f"Using user-provided redshift {redshift} "
+            f"instead of source redshift {data['redshift']}."
+        )
+        logger.warning(msg)
 
     src_position = SkyCoord(src_ra, src_dec, unit="deg")
 
-    catalog_data = Catalogs.query_region(  # pylint: disable=no-member
-        src_position,
-        radius=10.0 * u.arcsec,  # pylint: disable=no-member
-        catalog="Panstarrs",
-    )
-
-    if len(catalog_data) > 1:
-        logger.warning(
-            f"Multiple Panstarrs matches found for {name}. Will use the nearest one."
+    try:
+        catalog_data = Catalogs.query_region(  # pylint: disable=no-member
+            src_position,
+            radius=10.0 * u.arcsec,  # pylint: disable=no-member
+            catalog="Panstarrs",
         )
 
-    match = catalog_data.group_by("distance")[0]
+        if len(catalog_data) > 1:
+            logger.warning(
+                f"Multiple Panstarrs matches found for {name}. "
+                f"Will use the nearest one."
+            )
 
-    gal_ra, gal_dec = match["raMean"], match["decMean"]
+        match = catalog_data.group_by("distance")[0]
+
+        gal_ra, gal_dec = match["raMean"], match["decMean"]
+
+    except KeyError:
+        logger.warning(
+            f"No Panstarrs match found for {name}. Using original coordinates."
+        )
+        gal_ra, gal_dec = src_ra, src_dec
 
     return Galaxy(source_name=name, ra_deg=gal_ra, dec_deg=gal_dec, redshift=redshift)
